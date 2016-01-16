@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources  xmlns:tools="http://schemas.android.com/tools" tools:locale="us">
+    <string name="app_name"        >Shoping list</string>
+    <string name="drawer_open"     >Open</string>
+    <string name="drawer_close"    >Close</string>
+    <string name="clearGlsPrd"     >Clear tips</string>
+    <string name="clearGlsPrdCmt"  >Attention! Will be cleaned up a list of tips products</string>
+    <string name="noControlInPrd"  >Hide panel</string>
+    <string name="cancelProduct"   >Hide</string>
+    <string name="noControlComment">Minimize the input panel of the product?</string>
+    <string name="listNoCreate"    >No selected list</string>
+    <string name="ab_action"       >Actions</string>
+    <string name="ab_list"         >Lists</string>
+
+    <string name="addProduct"      >Add product</string>
+    
+    <!-- CreateActivity -->
+    <string name= "listName"          >List name</string>
+    <string name= "productNamed"      >Produst name</string>
+    <string name= "productNameIsEmpty">No set product name</string>
+    <string name= "comment"           >Comment</string>
+    <string name= "Save"              >Save</string>
+    <string name= "Add"               >Add </string>
+
+    <!-- Preferences -->
+    <string name= "Preferences"          >Options</string>
+    <string name= "ListNamePrefix"       >List name</string>
+    <string name= "Yes"                  >Yes</string>
+    <string name= "No"                   >No</string>
+
+    <!-- ListMenuAction -->
+    <string name= "createList"         >Create list</string>
+    
+    <!--ListActivityC-->
+    <string name= "actions_dialog"     >Actions:</string>
+    <string name= "addList"            >Create list</string>
+    <string name= "Input_list_name"    >Input list name</string>
+    <string name= "Input_product"      >Input product</string>
+
+    <!-- ListDialog -->
+    <string name= "list_dialog_yes"    >Save</string>
+    <string name= "list_dialog_no"     >Cancel </string>
+    
+    <string name= "add_list"           >Add</string>
+    <string name= "delete_list"        >Delete</string>
+    <string name= "refresh_list"       >Refresh</string>
+    
+    <!-- action_list_dialog -->
+    <string name="editL"               >Edit</string>
+    <string name="deleteL"             >Delete</string>
+    <string name="cancelL"             >Cancel </string>
+    <string name= "actionL"            >Actions:</string>
+    
+    <string name= "NoSelectListId"     >No selected item</string>
+    
+    <string name= "listItemParam"      >Description list</string>
+    
+    
+</resources>

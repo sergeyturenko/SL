@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources  xmlns:tools="http://schemas.android.com/tools" tools:locale="ru">
+    <string name="app_name"        >Список покупок</string>
+    <string name="drawer_open"     >Open</string>
+    <string name="drawer_close"    >Close</string>
+    <string name="clearGlsPrd"     >Очистить подсказки</string>
+    <string name="clearGlsPrdCmt"  >Внимание! Будет очищен список подсказок продуктов</string>
+    <string name="noControlInPrd"  >Скрыть панель</string>
+    <string name= "comment"        >Коментарии</string>
+    <string name="cancelProduct"   >Свернуть</string>
+    <string name="noControlComment">Сворачивать панель ввода продукта?</string>
+    <string name="listNoCreate"    >Не выбран лист</string>
+    <string name="ab_action"       >Действия</string>
+    <string name="ab_list"         >Списки</string>
+
+    <string name="addProduct"      >Добавить продукт</string>
+
+
+    <!-- CreateActivity -->
+    <string name= "listName"          >Название листа</string>
+    <string name= "productNamed"      >Название</string>
+    <string name= "productNameIsEmpty">Не указано наименование продукта</string>
+    <string name= "Save"              >Сохранить</string>
+    <string name= "Add"               >Добавить </string>
+
+    <!-- Preferences -->
+    <string name= "Preferences"          >Настройки</string>
+    <string name= "ListNamePrefix"       >Название листа</string>
+    <string name= "ListNamePrefixComment">Название листа по умолчанию</string>
+    <string name= "Exit"                 >Выйти?</string>
+    <string name= "Yes"                  >Да</string>
+    <string name= "No"                   >Нет</string>
+
+    <!-- ListMenuAction -->
+    <string name= "createList"         >Создать лист</string>
+    
+    <!--ListActivityC-->
+    <string name= "actions_dialog"     >Действия:</string>
+    <string name= "addList"            >Создать лист</string>
+    <string name= "Input_list_name"    >Введите название листа</string>
+    <string name= "Input_product"      >Введите продукт</string>
+
+    <!-- ListDialog -->
+    <string name= "list_dialog_yes"    >Сохранить</string>
+    <string name= "list_dialog_no"     >Отмена </string>
+    
+    <string name= "add_list"           >Добавить</string>
+    <string name= "delete_list"        >Удалить</string>
+    <string name= "refresh_list"       >Обновить список</string>
+    
+    <!-- action_list_dialog -->
+    <string name="editL"               >Изменить</string>
+    <string name="deleteL"             >Удалить</string>
+    <string name="cancelL"             >Отмена </string>
+    <string name= "actionL"            >Действия:</string>
+    <string name= "NoSelectListId"     >Не выбрана запись</string>
+    <string name= "listItemParam"      >Описание листа</string>
+
+    <string name= "doubleClickDelete"  >Нажмите еще раз для удаления!</string>
+
+    <string name= "sendTo"             >Отправить...</string>
+    <string name= "noSelectProducts"   >Нет неотмеченных продуктов в списке</string>
+
+</resources>

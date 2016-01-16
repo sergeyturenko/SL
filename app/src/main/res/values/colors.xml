@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <color name="start_menu" >#ffe7d789</color>
+  <color name="item"       >#d7d7d8</color>
+  <color name="select_item">#CBC18D</color>
+  <color name="item_sw"    >#CDBD9E</color>
+  <color name="item_v"     >#E9CE98</color>
+  <color name="item_v3"    >#CCCCCC</color>
+  <color name="item_v2"    >#D5D5D5</color>
+  <color name="textBlack"  >#181E67</color>
+  <color name="textWhite"  >#E5E4F0</color>
+  <color name="actBar"     >#D29822</color>
+  <color name="t1"         >#E9D5AC</color>
+  <color name="div1"       >#C5C5C9</color>
+  <color name="it1"        >#C5C5C9</color>
+</resources>
