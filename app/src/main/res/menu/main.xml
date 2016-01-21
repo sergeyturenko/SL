@@ -1,8 +1,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:sabd="http://schemas.android.com/apk/res-auto"
       xmlns:app="http://schemas.android.com/tools">
 
     <item android:id="@+id/action_share"
         android:title="@string/sendTo"
         android:icon="@drawable/abc_ic_menu_share_holo_dark"
-        app:showAsAction="never"/>
+        sabd:showAsAction="ifRoom"/>
 </menu>

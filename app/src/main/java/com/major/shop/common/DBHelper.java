@@ -12,10 +12,31 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DBHelper extends SQLiteOpenHelper implements IDBHelper{
   //=========================================================================
   protected static String  DATA_BASE = "ShopingDB";
+  private static SQLiteDatabase dataBase = null;
+  private static DBHelper THIS = null;
   //=========================================================================
   //-------------------------------------------------------------------------
   public DBHelper(Context context) {
     super(context, DATA_BASE, null, 1);
+  }
+    //-------------------------------------------------------------------------
+    public static void createConnection(Context context){
+        if(dataBase == null || !dataBase.isOpen()){
+            THIS = new DBHelper(context);
+            dataBase = THIS.getWritableDatabase();
+        }
+
+    }
+  //-------------------------------------------------------------------------
+  public static SQLiteDatabase getDataBaseConnection(){
+//     if(dataBase == null){
+//         dataBase = THIS.getWritableDatabase();
+//     }
+      return dataBase;
+  }
+  //-------------------------------------------------------------------------
+  public static void closeConnection(){
+      if(dataBase.isOpen()) dataBase.close();
   }
   //-------------------------------------------------------------------------
   @Override

@@ -24,13 +24,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 /**
- * mode = "C" ðåæèì êîïèðîâàíèÿ ëèñòà
+ * mode = "C" Ñ€ÐµÐ¶Ð¸Ð¼ ÐºÐ¾Ð¿Ð¸Ñ€Ð¾Ð²Ð°Ð½Ð¸Ñ Ð»Ð¸ÑÑ‚Ð°
  * */
 public class GetListName implements OnClickListener{
   //====================================================
   public final String LOG  = "LIST_ACTIVITY";
   private EditText dialogEditBox  ;
   private Button   dialogButtonYes;
+  private Button   copyListButton ;
   private Button   dialogButtonNo ;
   private Dialog   dialog         ;
   private String   mode           = "B";
@@ -60,9 +61,11 @@ public class GetListName implements OnClickListener{
     dialog.setContentView(R.layout.get_list_name_dialog);		
   //----------------------------------------------------
     dialog.findViewById(R.id.dialogListName).setFocusable(true);
-	dialogButtonYes = (Button) dialog.findViewById( R.id.dialogListButtonYes);
-	dialogButtonNo  = (Button) dialog.findViewById( R.id.dialogListButtonCancel );
+	dialogButtonYes = (Button) dialog.findViewById( R.id.dialogListButtonYes   );
+    copyListButton  = (Button) dialog.findViewById( R.id.copyButtonList        );
+	dialogButtonNo  = (Button) dialog.findViewById( R.id.dialogListButtonCancel);
 	dialogButtonYes.setOnClickListener(this);
+    copyListButton .setOnClickListener(this);
 	dialogButtonNo .setOnClickListener(this);
   }
   //----------------------------------------------------
@@ -140,7 +143,10 @@ public class GetListName implements OnClickListener{
 //	    ((ListActivityC)activity).rePaint();
 	  }
     }
-    else if(v.getId() ==R.id.dialogListButtonCancel) dialog.cancel();
+    else if(v.getId() == R.id.dialogListButtonCancel) dialog.cancel();
+    else if(v.getId() == R.id.copyButtonList){
+      dialog.cancel();
+    }
   }
   //----------------------------------------------------
   public void saveResultAddList(String _listName){
@@ -150,7 +156,7 @@ public class GetListName implements OnClickListener{
 	  lst.listName = _listName;
 	  listId = logic.addList(lst);
 	  if("C".equalsIgnoreCase(mode) && origListId>=0){
-		new ListOperLogic(activity).copyProductsInNewList(origListId, listId);
+//		new ListOperLogic(activity).copyProductsInNewList(origListId, listId);
 	  }
 	  if(ListActivityC.class.isInstance(activity)){
 	    int listId = 0;

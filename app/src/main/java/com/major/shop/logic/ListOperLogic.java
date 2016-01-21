@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import com.major.shop.common.DBHelper;
+import com.major.shop.common.IDBHelper;
 import com.major.shop.common.SM;
 import com.major.shop.model.BList;
 import com.major.shop.model.BProduct;
@@ -19,16 +20,15 @@ import java.util.Date;
 /**
  * Created by Sergey on 11.01.14.
  */
-public class ListOperLogic extends DBHelper{
+public class ListOperLogic implements IDBHelper {
   //=================================================================
   protected SQLiteDatabase db     = null;
   protected Context        context= null;
   //=================================================================
   //-----------------------------------------------------------------
   public ListOperLogic(Context _context){
-    super(_context);
     context = _context;
-    db      = getWritableDatabase();
+    db      = DBHelper.getDataBaseConnection();
   }
   //-----------------------------------------------------------------
   public ArrayList <BList> getAllLists(String _modeLoad){
@@ -36,9 +36,9 @@ public class ListOperLogic extends DBHelper{
     BList     listItem = null;
     BList     bl       = null;
     BProducts prds     = null;
-    Cursor c = db.rawQuery("SELECT " + LIST_ID + " as _id, " + LIST_NAME +", "+ GLOBAL_LST_ID +", "+
-                                       CREATE_DT+", "+STATUS+", "+STATUS_DT+", "+TYPE_LIST +
-                           "  from " + TBL_LISTS +" order by _id desc ", null);
+    Cursor c = db.rawQuery("SELECT " + LIST_ID + " as _id, " + LIST_NAME + ", " + GLOBAL_LST_ID + ", " +
+                                       CREATE_DT + ", " + STATUS + ", " + STATUS_DT + ", " + TYPE_LIST +
+                           "  from " + TBL_LISTS + " order by _id desc ", null);
     try{
       if (c!= null && c.getCount() > 0){
         c.moveToFirst();
@@ -58,8 +58,8 @@ public class ListOperLogic extends DBHelper{
            (SM.isEmpty(_modeLoad)          || 
             "F".equalsIgnoreCase(_modeLoad)||
             "G".equalsIgnoreCase(_modeLoad))){
-          if(!c.isClosed()) c.close ();
-          if(db.isOpen  ()) db.close();
+//          if(!c.isClosed()) c.close ();
+//          if(db.isOpen  ()) db.close();
 //          for(int i=0; i<list.size();i++){
 //        	bl = list.get(i);
 //        	prds = new ProductOperationLogic(context).getProductsLst(bl.listId);
@@ -69,8 +69,7 @@ public class ListOperLogic extends DBHelper{
         }
       }
     }
-    finally{if(!c.isClosed())c .close();
-            if(db.isOpen  ())db.close();}
+    finally{ if(!c.isClosed())c.close();}
     return list;
   }
   //-----------------------------------------------------------------
@@ -99,13 +98,37 @@ public class ListOperLogic extends DBHelper{
     return maxId;
   }
   //-----------------------------------------------------------------
-  public void copyProductsInNewList(int _listIdOrig, int _listNewId){
-    try{
-      db.execSQL(" insert into "+TBL_PRODLST +"("+LIST_ID+", "+ PROD_ID+", "+ PROD_NAME+", "+ PROD_CNT+", "+ UNIT_NAME+", "+COMMENT+", "+PROD_IS_BAY +")"
-                                 +" select " +  _listNewId +" , " + PROD_ID +" , " + PROD_NAME +" , " + PROD_CNT +" , " +
-                                           UNIT_NAME+" , "+COMMENT+" , 'N'   "
-                                 +"   from "+TBL_PRODLST+" where "+LIST_ID +"= ? ", new String[]{String.valueOf(_listIdOrig)});
-    }finally{db.close();}
+    public BList getListById(int _idList){
+      BList lst = new BList();
+      Cursor c  = null;
+      try{
+        c = db.rawQuery(" select " + LIST_ID + " , " + LIST_NAME + " , " + GLOBAL_LST_ID + " , " +
+                                    CREATE_DT + " , " + STATUS + " , " + STATUS_DT + " , " + TYPE_LIST+
+                        "  from " + TBL_LISTS + " where "+ LIST_ID + " = ? ", new String[]{String.valueOf(_idList)});
+        if (c!= null && c.getCount() > 0){
+          c.moveToFirst();
+          do {
+            lst.listId       = c.getInt   (c.getColumnIndex(LIST_ID      ));
+            lst.listName     = c.getString(c.getColumnIndex(LIST_NAME    ));
+            lst.globalListId = c.getInt   (c.getColumnIndex(GLOBAL_LST_ID));
+            lst.createDate   = c.getString(c.getColumnIndex(CREATE_DT    ));
+            lst.status       = c.getString(c.getColumnIndex(STATUS       ));
+            lst.statusDate   = c.getString(c.getColumnIndex(STATUS_DT    ));
+            lst.typeList     = c.getString(c.getColumnIndex(TYPE_LIST    ));
+          } while (c.moveToNext());
+        }
+      }
+      finally{c.close();/* db.close();*/}
+      return lst;
+  }
+  //-----------------------------------------------------------------
+  public int copyList(int _listIdOrig){
+    int listId = 0;
+    BList lst = getListById(_listIdOrig);
+    try {
+      listId = addList(lst);
+    }catch (Exception e){e.printStackTrace();}
+    return listId;
   }
   //-----------------------------------------------------------------
   public int addList(BList _data) throws Exception{
@@ -114,7 +137,7 @@ public class ListOperLogic extends DBHelper{
     Date date = new Date();
     int listId = getMaxListId()+1;
     if(_data != null){
-      try{
+//      try{
         cv = new ContentValues();
         cv.put(LIST_ID  , listId        );
         cv.put(LIST_NAME, _data.listName);
@@ -122,11 +145,10 @@ public class ListOperLogic extends DBHelper{
         cv.put(CREATE_DT, dateFormat.format(date));
         cv.put(STATUS_DT, dateFormat.format(date));
         cv.put(TYPE_LIST, "C");
-        if(db.isOpen())db = getWritableDatabase();
         db.insert(TBL_LISTS, null, cv );
         Log.d("Test", " DB insert: " + db.isOpen());
-      }
-      finally{db.close();}
+//      }
+//      finally{db.close();}
 //      String sql = "INSERT INTO "+TBL_LISTS+" (LIST_ID, LIST_NAME, STATUS, CREATE_DT, STATUS_DT, TYPE_LIST) " +
 //      		       " VALUES("+(++listId)+",'"+_data.listName+"','C','"+dateFormat.format(date)+"','"+dateFormat.format(date)+"','C')" ;
 //      db.execSQL(sql);
@@ -161,13 +183,13 @@ public class ListOperLogic extends DBHelper{
   //------------------------------------------------------------
   public void editListName(BList _list){
 	if(_list != null){
-      try{
+//      try{
 	    ContentValues cv = new ContentValues();
 	    cv.put(LIST_NAME, _list.listName);
 	    db.update(TBL_LISTS, cv, LIST_ID +" = ? ", new String[]{String.valueOf(_list.listId)});
 	    
-      }
-      finally{ db.close();}
+//      }
+//      finally{ db.close();}
 	}
   }
   //-----------------------------------------------------------------
@@ -178,7 +200,7 @@ public class ListOperLogic extends DBHelper{
   public void deleteList(Integer _listId){
 	db.delete(TBL_LISTS, LIST_ID + "=" + _listId, null);
 	deleteAllProductsFromList(_listId);
-	db.close();
+//	db.close();
   }
   //-----------------------------------------------------------------
   public void beginTransaction(){
@@ -189,9 +211,9 @@ public class ListOperLogic extends DBHelper{
     if(db!= null && db.isOpen()) db.endTransaction();
   }
   //-----------------------------------------------------------------
-  public void closeN(){
-    if(db!= null && db.isOpen())db.close();
-  }
+//  public void closeN(){
+//    if(db!= null && db.isOpen())db.close();
+//  }
 //  //-----------------------------------------------------------------  
 //  public int getCntNumb(String _cntName) throws Exception{
 //	ContentValues cv      = null;
@@ -230,7 +252,7 @@ public class ListOperLogic extends DBHelper{
 //	return cntNumb;
 //}
 ////-------------------------------------------------------------------------
-public void close(){
-	db.close();
-}
+//public void close(){
+//	db.close();
+//}
 }

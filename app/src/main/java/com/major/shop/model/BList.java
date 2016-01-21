@@ -15,7 +15,7 @@ public class BList {
   public String statusDate    = null;
   /**(C - created/R - rescivered)*/
   public String typeList      = null;
-  /**S- обычная выборка; F- полная выборка*/
+  /**S- РѕР±С‹С‡РЅР°СЏ РІС‹Р±РѕСЂРєР°; F- РїРѕР»РЅР°СЏ РІС‹Р±РѕСЂРєР°*/
   public String modeLoad      = "S";
   public String strProdFromLst= null;
   public BProducts products   = null;

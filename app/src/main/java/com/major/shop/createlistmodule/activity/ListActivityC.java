@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import com.bugsense.trace.BugSenseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.major.shop.R;
+import com.major.shop.common.DBHelper;
 import com.major.shop.common.SM;
 import com.major.shop.common.SwipeDismissListViewTouchListener;
 import com.major.shop.createlistmodule.dialog.GetListName;
@@ -27,6 +28,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -57,6 +59,7 @@ import android.widget.Toast;
 @SuppressLint("NewApi")
 public class ListActivityC extends ActionBarActivity implements  OnEditorActionListener{
   //===============================================================================
+  boolean isTest = true;//!!!!!
   public static final String    PRF_SELECTED_LST = "selected_list";
   private AutoCompleteTextView  txt_prodName   ;
   private EditText              txt_coment     ;
@@ -71,7 +74,7 @@ public class ListActivityC extends ActionBarActivity implements  OnEditorActionL
   public  LinkedList<BProduct>  productsList   = new LinkedList<BProduct>();
   public  ListCustomAdapter     ca             = null;
   public  ProductCustomAdapter  pca            = null;
-  private GetListName     lstDialog      = null;
+  private GetListName           lstDialog      = null;
   private Button                bt_AddNewList  = null;
   private Button                bt_AddNewProd  = null;
   private Button                bt_addOneProd  = null;
@@ -86,8 +89,17 @@ public class ListActivityC extends ActionBarActivity implements  OnEditorActionL
   private ArrayAdapter<String>  txtCmltadapter = null;
   //===============================================================================
   //-------------------------------------------------------------------------------
+  public int getListId() {
+    return listId;
+  }
+
+  public void setListId(int listId) {
+    this.listId = listId;
+  }
+  //-------------------------------------------------------------------------------
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    DBHelper.createConnection(this);
     setContentView(R.layout.activity_main);
     THIS = this;
     mTitle = "";
@@ -193,12 +205,18 @@ public class ListActivityC extends ActionBarActivity implements  OnEditorActionL
         BProduct data = getDataFromView();
         if(listId < 0) Toast.makeText(THIS, R.string.listNoCreate, Toast.LENGTH_SHORT).show();
         if(isValidateData(data)){
-          try { pol.addProductInList(listId, data); } catch (Exception e) { e.printStackTrace(); }
+          try {
+            pol.addProductInList(listId, data);
+            if(!hasValueInGls(data.productName))
+              txtCmltadapter.add(data.productName);
+          } catch (Exception e) {
+//            Log.e("!!!!!111-", e.getMessage());
+            e.printStackTrace();
+          }
           reloadAndSetProdList(listId);
           pca.notifyDataSetChanged();
           bt_AddNewProd.performClick();
           imm.hideSoftInputFromWindow(THIS.getWindow().getDecorView().getWindowToken(), 0);
-          txtCmltadapter.add(data.productName);
           txtCmltadapter.notifyDataSetChanged();
           clearFields();
           loadAllLists();
@@ -208,35 +226,34 @@ public class ListActivityC extends ActionBarActivity implements  OnEditorActionL
     
     bt_AddNewProd.setOnClickListener(new OnClickListener() {
       public void onClick(View v) {
-    	if(loAddProd.isShown()){
-    	  bt_AddNewProd.setText(R.string.addProduct);
-    	  loAddProd.setVisibility(View.GONE);
-    	  imm.hideSoftInputFromWindow(THIS.getWindow().getDecorView().getWindowToken(), 0);
-    	  txt_prodName.setText("");
-    	}
-    	else{
-    	  bt_AddNewProd.setText(R.string.cancelProduct);
-    	  loAddProd.setVisibility(View.VISIBLE);
-    	  txt_prodName.requestFocus();
-    	  imm.showSoftInput(txt_prodName, InputMethodManager.SHOW_IMPLICIT);
-    	}
+        if (loAddProd.isShown()) {
+          bt_AddNewProd.setText(R.string.addProduct);
+          loAddProd.setVisibility(View.GONE);
+          imm.hideSoftInputFromWindow(THIS.getWindow().getDecorView().getWindowToken(), 0);
+          txt_prodName.setText("");
+        } else {
+          bt_AddNewProd.setText(R.string.cancelProduct);
+          loAddProd.setVisibility(View.VISIBLE);
+          txt_prodName.requestFocus();
+          imm.showSoftInput(txt_prodName, InputMethodManager.SHOW_IMPLICIT);
+        }
 	  }
     });
     
     bt_AddNewList.setOnClickListener(new OnClickListener() {
-	  public void onClick(View v) {
-		lstDialog = new GetListName(THIS);
-		lstDialog.createDefaultNameList();
-		loadAllLists();
-		ca.setSelectedItem(getPositionInList(list.get(0).listId)); 
-		mDrawerLayout.closeDrawers();
-		mDrawerList.performItemClick(
-				mDrawerList.getAdapter().getView(0, null, null),
-		        0, mDrawerList.getAdapter().getItemId(0));
-		bt_AddNewProd.setText(R.string.cancelProduct);
-   	    loAddProd.setVisibility(View.VISIBLE);
-   	    txt_prodName.requestFocus();
-   	    imm.showSoftInput(txt_prodName, InputMethodManager.SHOW_IMPLICIT);
+      public void onClick(View v) {
+        lstDialog = new GetListName(THIS);
+        lstDialog.createDefaultNameList();
+        loadAllLists();
+        ca.setSelectedItem(getPositionInList(list.get(0).listId));
+        mDrawerLayout.closeDrawers();
+        mDrawerList.performItemClick(
+                mDrawerList.getAdapter().getView(0, null, null),
+                0, mDrawerList.getAdapter().getItemId(0));
+        bt_AddNewProd.setText(R.string.cancelProduct);
+        loAddProd.setVisibility(View.VISIBLE);
+        txt_prodName.requestFocus();
+        imm.showSoftInput(txt_prodName, InputMethodManager.SHOW_IMPLICIT);
 	  } 
 	});
       	
@@ -319,6 +336,16 @@ public class ListActivityC extends ActionBarActivity implements  OnEditorActionL
     });
   //===============================================================================================
     }
+  public boolean hasValueInGls(String prodName){
+    boolean has = false;
+    for(String s : txtComplete){
+      if(prodName.equalsIgnoreCase(s)){
+        has = true;
+        break;
+      }
+    }
+    return has;
+  }
     //---------------------------------------------------
     protected int getFirstIndexProdBay(){
   	BProduct prd = null;
@@ -416,14 +443,18 @@ public class ListActivityC extends ActionBarActivity implements  OnEditorActionL
    //-------------------------------------------------------------------
    protected void onStart() {
  	super.onStop();
- 	BugSenseHandler.startSession(ListActivityC.this);
- 	EasyTracker.getInstance(this).activityStart(this);
+     if(!isTest){
+ 	   BugSenseHandler.startSession(ListActivityC.this);
+ 	   EasyTracker.getInstance(this).activityStart(this);
+     }
    };
    //-------------------------------------------------------------------
    protected void onStop() {
  	super.onStop();
- 	BugSenseHandler.flush(ListActivityC.this);
- 	EasyTracker.getInstance(this).activityStop(this);
+     if(!isTest) {
+       BugSenseHandler.flush(ListActivityC.this);
+       EasyTracker.getInstance(this).activityStop(this);
+     }
    };
    //-------------------------------------------------------------------
    @Override
@@ -473,11 +504,11 @@ public class ListActivityC extends ActionBarActivity implements  OnEditorActionL
     boolean hasNotCheck = false;
     StringBuilder sb = new StringBuilder();
      if(productsList!= null && productsList.size()>0){
-         sb.append(R.string.app_name).append(":\n");
+         sb.append(getResources().getString(R.string.app_name)).append(":\n");
          for(BProduct p : productsList){
              if(!"Y".equalsIgnoreCase(p.isBay)){
                  hasNotCheck = true;
-                 sb.append(p.productName).append(" ").append(p.comment).append(";\n");
+                 sb.append("-").append(p.productName).append(" ").append(p.comment).append(";\n");
              }
          }
      }
@@ -503,5 +534,9 @@ public class ListActivityC extends ActionBarActivity implements  OnEditorActionL
      return super.onKeyDown(keyCode, event);
    }
   //-------------------------------------------------------------------
-
+  @Override
+  public void onDestroy(){
+    super.onDestroy();
+//    DBHelper.closeConnection();
+  }
 }
